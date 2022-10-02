@@ -4,6 +4,6 @@ COPY ./requirements.dep /app/requirements.dep
 WORKDIR /app
 RUN pip install -r requirements.dep
 COPY . /app
-WORKDIR /app/src
+WORKDIR /app
 ENTRYPOINT [ "python" ]
 CMD [ "Niblette.py" ]
