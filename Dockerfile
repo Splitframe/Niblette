@@ -6,4 +6,4 @@ RUN pip install -r requirements.dep
 COPY . /app
 WORKDIR /app/src
 ENTRYPOINT [ "python" ]
-CMD [ "geostash.py" ]
+CMD [ "Niblette.py" ]

@@ -95,6 +95,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (command != "SEND"):
             return
         fullpath = os.path.basename("/usr/download/" + filename)
+        print("Receiving a file. Potential location: ", fullpath)
         if (os.path.exists(fullpath)):
             print("A file named", fullpath, "already exists. Refusing to save it.")
             return

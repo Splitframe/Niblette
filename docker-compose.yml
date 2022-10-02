@@ -1,11 +1,11 @@
-version: '3.7'
+version: '3.3'
 
-networks:
-  gm_web:
-    external: true
+#networks:
+#  gm_web:
+#    external: true
 
 services:
-  geostash:
+  niblette:
     image: niblette:0.1
     restart: unless-stopped
 #    ports:
