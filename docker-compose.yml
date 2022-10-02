@@ -1,0 +1,31 @@
+version: '3.7'
+
+networks:
+  gm_web:
+    external: true
+
+services:
+  geostash:
+    image: niblette:0.1
+    restart: unless-stopped
+#    ports:
+#      - '6688:6688'
+#    networks:
+#      - gm_web
+#    environment:
+#      FLASK_APP: geostash
+#      FLASK_RUN_PORT: 6688
+#      MQTT_SERVER_HOST: mqtt.ivanto.de
+#      MQTT_SERVER_PORT: 8883
+#      MQTT_PUBLISH_ENABLE: 'true'
+      #MQTT_CERTS_STORE: /usr/geostash/mqtt-certs
+    volumes:
+      - /mnt/vulcan/Incoming:/usr/download
+#      - ./mqtt-certs:/usr/geostash/mqtt-certs
+#    env_file:
+#      - .env
+#    labels:
+#      - traefik.backend=geostash
+#      - traefik.frontend.rule=Host:geostash.data1.geomobile.de,geostash.portal.ivanto.de
+#      - traefik.docker.network=gm_web
+#      - traefik.port=6688
