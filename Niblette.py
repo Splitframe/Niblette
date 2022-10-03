@@ -79,10 +79,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (nickname == "CR-HOLLAND|NEW"):
             if ("(1080p)" in message):
                 print(f"Relevant Message from Source Bot: {message}.")
-                match = Niblette.pattern.match(message)
+                match = Niblette.pattern.findall(message.strip("'"))
                 if(match):
                     print("Conditions met, requesting download.")
-                    connection.privmsg("CR-HOLLAND|NEW", f"{match.group()}")
+                    connection.privmsg("CR-HOLLAND|NEW", f"{match[0]}")
         return
 
     def do_command(self, event, cmd):
