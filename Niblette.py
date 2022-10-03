@@ -13,8 +13,12 @@ import irc.bot
 import irc.strings
 
 from irc.client import ip_numstr_to_quad, ip_quad_to_numstr
+from jaraco.stream import buffer
 #from sqlitedao import SqliteDao, ColumnDict
 
+
+bot = None
+isWindows = False
 
 # def create_title(dao: SqliteDao):
 #     columns = ColumnDict()\
@@ -42,6 +46,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
+        self.connection.buffer_class = buffer.LenientDecodingLineBuffer
         self.channel = channel
         self.received_bytes = 0
 
@@ -67,8 +72,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
         message:str = event.arguments[0].split(":", 1)[0]  # Message
         if (nickname == "CR-HOLLAND|NEW"):
             if ("(1080p)" in message):
+                print(f"Relevant Message from Source Bot: {message}.")
                 match = Niblette.pattern.match(message)
                 if(match):
+                    print("Conditions met, requesting download.")
                     connection.privmsg("CR-HOLLAND|NEW", match.group())
         return
 
@@ -94,11 +101,18 @@ class Niblette(irc.bot.SingleServerIRCBot):
         command, filename, peer_address, peer_port, size = parts
         if (command != "SEND"):
             return
-        fullpath = os.path.basename("/usr/download/" + filename)
+        if (isWindows):
+            fullpath = os.path.basename(filename)
+        else:
+            fullpath = os.path.basename("/usr/download/" + filename)
         print("Receiving a file. Potential location: ", fullpath)
         if (os.path.exists(fullpath)):
             print("A file named", fullpath, "already exists. Refusing to save it.")
             return
+        #TODO:
+        # Implement multi download functionality.
+        # Currently the system is vulnerable to multiple simultaneous connections.
+        # The received_bytes get mangled.
         self.received_bytes = 0
         self.file = open(fullpath, "wb")
         peer_address = irc.client.ip_numstr_to_quad(peer_address)
@@ -129,6 +143,15 @@ def exit_handler():
 
 def main():
     global bot
+    global isWindows
+    print("Niblette starting up.")
+
+    if (os.name == 'nt'):
+        print(f"Detected OS: Windows")
+        isWindows = True
+    else:
+        print(f"Detected OS: Linux / Other")
+
     server = "irc.rizon.net"
     channel = "#NIBL"
     nickname = "Niblette"
@@ -136,12 +159,19 @@ def main():
 
     atexit.register(exit_handler)
 
+    print(f"Starting Bot.")
     bot = Niblette(channel, nickname, server, port)
 
     try:
         bot.start()
     except KeyboardInterrupt:
         bot.die()
+    except Exception as ex:
+        print(f"Error: {ex}")
+        print("Attempting to restart bot.")
+        bot.die()
+        bot.start()
+
 
 if __name__ == "__main__":
     main()
