@@ -42,7 +42,7 @@ isWindows = False
 
 class Niblette(irc.bot.SingleServerIRCBot):
 
-    pattern = re.compile('(?<=\/MSG).*$')
+    pattern = re.compile('(?<=MSG CR-HOLLAND\|NEW ).*$')
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
@@ -63,13 +63,17 @@ class Niblette(irc.bot.SingleServerIRCBot):
         connection.join(self.channel)
 
     def on_privmsg(self, connection, event):
-        print("Whisper from " + event.source.nick + ": " + event.arguments[0])
-        self.do_command(event, event.arguments[0])
+        nickname = event.source.nick
+        message: str = event.arguments[0]
+        print(f"Whisper from {nickname}: {message}")
+        match = Niblette.pattern.match(message)
+        if(match):
+            connection.privmsg(nickname, f"Regex match output: {match.group()}")
 
     def on_pubmsg(self, connection, event):
 
         nickname = event.source.nick
-        message:str = event.arguments[0].split(":", 1)[0]  # Message
+        message:str = event.arguments[0]  # Message
         print(f"Sender: {nickname}, Message: {message}")
         if (nickname == "CR-HOLLAND|NEW"):
             if ("(1080p)" in message):
@@ -77,7 +81,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 match = Niblette.pattern.match(message)
                 if(match):
                     print("Conditions met, requesting download.")
-                    #connection.privmsg("CR-HOLLAND|NEW", match.group())
+                    connection.privmsg("CR-HOLLAND|NEW", f"{match.group()}")
         return
 
     def do_command(self, event, cmd):
