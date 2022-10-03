@@ -5,5 +5,5 @@ WORKDIR /app
 RUN pip install -r requirements.dep
 COPY . /app
 WORKDIR /app
-ENTRYPOINT [ "python" ]
+ENTRYPOINT [ "python", "-u" ]
 CMD [ "Niblette.py" ]

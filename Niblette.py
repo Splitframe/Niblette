@@ -68,15 +68,16 @@ class Niblette(irc.bot.SingleServerIRCBot):
 
     def on_pubmsg(self, connection, event):
 
-        nickname = self.connection.get_nickname()
+        nickname = event.source.nick
         message:str = event.arguments[0].split(":", 1)[0]  # Message
+        print(f"Sender: {nickname}, Message: {message}")
         if (nickname == "CR-HOLLAND|NEW"):
             if ("(1080p)" in message):
                 print(f"Relevant Message from Source Bot: {message}.")
                 match = Niblette.pattern.match(message)
                 if(match):
                     print("Conditions met, requesting download.")
-                    connection.privmsg("CR-HOLLAND|NEW", match.group())
+                    #connection.privmsg("CR-HOLLAND|NEW", match.group())
         return
 
     def do_command(self, event, cmd):
