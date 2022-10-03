@@ -20,7 +20,7 @@ services:
 #      MQTT_PUBLISH_ENABLE: 'true'
       #MQTT_CERTS_STORE: /usr/geostash/mqtt-certs
     volumes:
-      - /mnt/vulcano/Incoming:/usr/download
+      - /srv/dev-disk-by-id-md-name-Vulcano-Vault/share/Incoming:/usr/download
 #      - ./mqtt-certs:/usr/geostash/mqtt-certs
 #    env_file:
 #      - .env
