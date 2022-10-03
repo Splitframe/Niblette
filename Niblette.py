@@ -42,7 +42,7 @@ isWindows = False
 
 class Niblette(irc.bot.SingleServerIRCBot):
 
-    pattern = re.compile('(?<=MSG CR-HOLLAND\|NEW ).*$')
+    pattern = re.compile(r"(?<=MSG CR-HOLLAND\|NEW ).*$")
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
@@ -66,9 +66,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
         nickname = event.source.nick
         message: str = event.arguments[0]
         print(f"Whisper from {nickname}: {message}")
-        match = Niblette.pattern.match(message)
+        match = Niblette.pattern.findall(message.strip("'"))
         if(match):
-            connection.privmsg(nickname, f"Regex match output: {match.group()}")
+            print(f"Regex Match, output: {match[0]}")
+            connection.privmsg(nickname, f"Regex match output: {match[0]}")
 
     def on_pubmsg(self, connection, event):
 
