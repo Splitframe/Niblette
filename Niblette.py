@@ -48,7 +48,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.connection.buffer_class = buffer.LenientDecodingLineBuffer
         self.channel = channel
+        self.downloader = self.dcc("raw")
+        self.total_bytes = 0
         self.received_bytes = 0
+        self.file = None
 
     # def init_database(self):
     #     self.db = sl.connect("niblette.db")
@@ -70,6 +73,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if(match):
             print(f"Regex Match, output: {match[0]}")
             connection.privmsg(nickname, f"Regex match output: {match[0]}")
+            connection.privmsg("CR-HOLLAND|NEW", f"{match[0]}")
 
     def on_pubmsg(self, connection, event):
 
@@ -115,21 +119,28 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (os.path.exists(fullpath)):
             print("A file named", fullpath, "already exists. Refusing to save it.")
             return
-        #TODO:
-        # Implement multi download functionality.
-        # Currently the system is vulnerable to multiple simultaneous connections.
-        # The received_bytes get mangled.
+        while (self.downloader.connected == True):
+            time.sleep(5)
+        print("Downloading ", filename)
+        self.total_bytes = int(size)
         self.received_bytes = 0
+        if (self.file is not None):
+            self.file.close()
         self.file = open(fullpath, "wb")
         peer_address = irc.client.ip_numstr_to_quad(peer_address)
         peer_port = int(peer_port)
-        self.dcc = self.dcc("raw").connect(peer_address, peer_port)
+        self.downloader = self.dcc("raw")
+        self.downloader = self.downloader.connect(peer_address, peer_port)
 
     def on_dccmsg(self, connection, event):
         data = event.arguments[0]
         self.file.write(data)
         self.received_bytes = self.received_bytes + len(data)
-        self.dcc.send_bytes(struct.pack("!I", self.received_bytes))
+        connection.send_bytes(struct.pack("!I", self.received_bytes))
+        if (self.received_bytes == self.total_bytes):
+            print("Finished, disconnecting.")
+            self.file.close()
+            self.downloader.disconnect()
 
     def getFileSize(self, filename):
         if (os.path.exists(filename)):
@@ -144,6 +155,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
 
 def exit_handler():
     print("Exiting...")
+    bot.file.close()
     bot.die()
     time.sleep(5)
 
