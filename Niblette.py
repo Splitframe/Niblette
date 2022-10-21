@@ -119,11 +119,11 @@ class Niblette(irc.bot.SingleServerIRCBot):
         showName, season = determineStructure(filename)
 
         if (isWindows):
-            fullpath = os.path.basename(filename)
+            fullpath   = filename
         else:
-            showPath   = os.path.basename(f"/usr/download/Anime/{showName}")
-            seasonPath = os.path.basename(f"/usr/download/Anime/{showName}/{season}")
-            fullpath   = os.path.basename(f"/usr/download/Anime/{showName}/{season}/{filename}")
+            showPath   = f"/usr/download/Anime/{showName}"
+            seasonPath = f"/usr/download/Anime/{showName}/{season}"
+            fullpath   = f"/usr/download/Anime/{showName}/{season}/{filename}"
             if (not os.path.exists(showPath)):
                 os.mkdir(showPath)
             if (not os.path.exists(seasonPath)):
