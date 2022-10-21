@@ -134,9 +134,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
             print("A file named", fullpath, "already exists. Refusing to save it.")
             return
         while (self.downloader.connected == True):
-            time.sleep(5)
+            time.sleep(30)
         print("Downloading ", filename)
         self.total_bytes = int(size)
+        print(f"Size: {self.total_bytes}")
         self.received_bytes = 0
         if (self.file is not None):
             self.file.close()
@@ -147,6 +148,12 @@ class Niblette(irc.bot.SingleServerIRCBot):
         self.downloader = self.downloader.connect(peer_address, peer_port)
 
     def on_dccmsg(self, connection, event):
+        if (len(event.arguments) != 1):
+            print(f"Error while downloading, error: {event.arguments}")
+            connection.send_bytes(struct.pack("!A"))
+            self.file.close()
+            self.downloader.disconnect()
+
         data = event.arguments[0]
         self.file.write(data)
         self.received_bytes = self.received_bytes + len(data)
