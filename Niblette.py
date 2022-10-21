@@ -42,7 +42,10 @@ isWindows = False
 
 class Niblette(irc.bot.SingleServerIRCBot):
 
-    pattern = re.compile(r"(?<=MSG CR-HOLLAND\|NEW ).*$")
+    botPattern    = re.compile(r"(?<=MSG CR-HOLLAND\|NEW ).*$")
+    showPattern   = re.compile(r"(?<=\])([^-]{3,}?)(?=\-)")
+    seasonPattern = re.compile(r"S(\d+)")
+
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
@@ -69,7 +72,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
         nickname = event.source.nick
         message: str = event.arguments[0]
         print(f"Whisper from {nickname}: {message}")
-        match = Niblette.pattern.findall(message.strip("'"))
+        match = Niblette.botPattern.findall(message.strip("'"))
         if(match):
             print(f"Regex Match, output: {match[0]}")
             connection.privmsg(nickname, f"Regex match output: {match[0]}")
@@ -83,7 +86,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (nickname == "CR-HOLLAND|NEW"):
             if ("(1080p)" in message):
                 print(f"Relevant Message from Source Bot: {message}.")
-                match = Niblette.pattern.findall(message.strip("'"))
+                match = Niblette.botPattern.findall(message.strip("'"))
                 if(match):
                     print("Conditions met, requesting download.")
                     connection.privmsg("CR-HOLLAND|NEW", f"{match[0]}")
@@ -109,12 +112,23 @@ class Niblette(irc.bot.SingleServerIRCBot):
         payload = event.arguments[1]
         parts = shlex.split(payload)
         command, filename, peer_address, peer_port, size = parts
+
         if (command != "SEND"):
             return
+
+        showName, season = determineStructure(filename)
+
         if (isWindows):
             fullpath = os.path.basename(filename)
         else:
-            fullpath = os.path.basename("/usr/download/" + filename)
+            showPath   = os.path.basename(f"/usr/download/Anime/{showName}")
+            seasonPath = os.path.basename(f"/usr/download/Anime/{showName}/{season}")
+            fullpath   = os.path.basename(f"/usr/download/Anime/{showName}/{season}/{filename}")
+            if (not os.path.exists(showPath)):
+                os.mkdir(showPath)
+            if (not os.path.exists(seasonPath)):
+                os.mkdir(seasonPath)
+
         print("Receiving a file. Potential location: ", fullpath)
         if (os.path.exists(fullpath)):
             print("A file named", fullpath, "already exists. Refusing to save it.")
@@ -152,6 +166,23 @@ class Niblette(irc.bot.SingleServerIRCBot):
     #     :param pubmsg: The whole public message text that announced a new upload
     #     :return: The name of the show that was being uploaded.
     #     """
+
+def determineStructure(filename):
+    nameMatch = Niblette.showPattern.findall(filename)
+    seasonMatch = Niblette.seasonPattern.findall(filename)
+    season: str = "01"
+    if (nameMatch):
+        showName: str = nameMatch[0]
+        showName = showName.strip()
+
+        if (seasonMatch):
+            season = seasonMatch[0].zfill(2)
+
+        season = f"Season {season}"
+
+        return showName, season
+    return "", ""
+
 
 def exit_handler():
     print("Exiting...")

@@ -5,5 +5,5 @@ services:
     image: niblette:0.1
     restart: unless-stopped
     volumes:
-      - /srv/dev-disk-by-id-md-name-Vulcano-Vault/share/Incoming:/usr/download
+      - /srv/dev-disk-by-id-md-name-Vulcano-Vault/share:/usr/download
 
