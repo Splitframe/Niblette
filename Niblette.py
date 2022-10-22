@@ -148,22 +148,27 @@ class Niblette(irc.bot.SingleServerIRCBot):
         self.downloader = self.downloader.connect(peer_address, peer_port)
 
     def on_dccmsg(self, connection, event):
-        if (len(event.arguments) != 1):
-            print(f"Error while downloading, error: {event.arguments}")
-            connection.send_bytes(struct.pack("!A"))
-            self.file.close()
-            self.downloader.disconnect()
-        data = event.arguments[0]
-        self.file.write(data)
-        self.received_bytes = self.received_bytes + len(data)
-        print("\033[0;0H                                                                        ", end="")
-        print("\033[0;0HDownloaded Bytes: " + self.received_bytes, end="")
-        connection.send_bytes(struct.pack("!I", self.received_bytes))
-        if (self.received_bytes == self.total_bytes):
-            print("")
-            print("Finished, disconnecting.")
-            self.file.close()
-            self.downloader.disconnect()
+        try:
+            if (len(event.arguments) != 1):
+                print(f"Error while downloading, error: {event.arguments}")
+                connection.send_bytes(struct.pack("!A"))
+                self.file.close()
+                self.downloader.disconnect()
+            data = event.arguments[0]
+            self.file.write(data)
+            self.received_bytes = self.received_bytes + len(data)
+
+            if(self.received_bytes % 17 == 0):
+                print(f"Downloaded Bytes: {self.received_bytes}")
+
+            connection.send_bytes(struct.pack("!I", self.received_bytes))
+            if (self.received_bytes == self.total_bytes):
+                print("")
+                print("Finished, disconnecting.")
+                self.file.close()
+                self.downloader.disconnect()
+        except Exception as ex:
+            print(f"Error: {ex}")
 
     def getFileSize(self, filename):
         if (os.path.exists(filename)):
