@@ -47,7 +47,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
     botPattern    = re.compile(r"(?<=MSG CR-HOLLAND\|NEW ).*$")
     showPattern   = re.compile(r"(?<=\])([^-]{3,}?)(?=\-)")
     seasonPattern = re.compile(r"S(\d+)")
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
