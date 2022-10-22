@@ -5,6 +5,7 @@ import shlex
 import struct
 import atexit
 import re
+import threading
 
 #import sqlite3 as sl
 import time
@@ -55,6 +56,9 @@ class Niblette(irc.bot.SingleServerIRCBot):
         self.total_bytes = 0
         self.received_bytes = 0
         self.file = None
+        self.dccTimer = None
+        self.dccMaxTries = 100
+        self.dccTries = 0
 
     # def init_database(self):
     #     self.db = sl.connect("niblette.db")
@@ -151,17 +155,17 @@ class Niblette(irc.bot.SingleServerIRCBot):
         try:
             if (len(event.arguments) != 1):
                 print(f"Error while downloading, error: {event.arguments}")
-                connection.send_bytes(struct.pack("!A"))
                 self.file.close()
                 self.downloader.disconnect()
             data = event.arguments[0]
             self.file.write(data)
             self.received_bytes = self.received_bytes + len(data)
 
-            if(self.received_bytes % 17 == 0):
+            if(self.received_bytes % 137 == 0):
                 print(f"Downloaded Bytes: {self.received_bytes}")
 
-            connection.send_bytes(struct.pack("!I", self.received_bytes))
+            self.dccTries = 0
+            self.keepAlive(connection)
             if (self.received_bytes == self.total_bytes):
                 print("")
                 print("Finished, disconnecting.")
@@ -174,6 +178,18 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (os.path.exists(filename)):
             return os.stat(filename).st_size
         return 0
+
+    def keepAlive(self, connection):
+        connection.send_bytes(struct.pack("!I", self.received_bytes))
+        self.dccTries =+ 1
+        if(self.dccTries >= self.dccMaxTries):
+            print("Reached max download attempts, closing connection.")
+            self.file.close()
+            self.downloader.disconnect()
+        if(self.dccTimer is not None):
+            self.dccTimer.stop()
+        self.dccTimer = threading.Timer(3, self.keepAlive, [connection]).start()
+
 
     # def extractShowName(self, pubmsg):
     #     """
