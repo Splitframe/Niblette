@@ -6,6 +6,7 @@ import struct
 import atexit
 import re
 import threading
+import logging
 
 #import sqlite3 as sl
 import time
@@ -46,7 +47,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
     botPattern    = re.compile(r"(?<=MSG CR-HOLLAND\|NEW ).*$")
     showPattern   = re.compile(r"(?<=\])([^-]{3,}?)(?=\-)")
     seasonPattern = re.compile(r"S(\d+)")
-
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
@@ -59,6 +60,8 @@ class Niblette(irc.bot.SingleServerIRCBot):
         self.dccTimer = None
         self.dccMaxTries = 100
         self.dccTries = 0
+        self.log = logging.getLogger(__name__)
+        self.queue = []
 
     # def init_database(self):
     #     self.db = sl.connect("niblette.db")
@@ -137,8 +140,9 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (os.path.exists(fullpath)):
             print("A file named", fullpath, "already exists. Refusing to save it.")
             return
-        while (self.downloader.connected == True):
-            time.sleep(30)
+        if (self.downloader.connected == True):
+            self.queue.append((connection, event))
+            return
         print("Downloading ", filename)
         self.total_bytes = int(size)
         print(f"Size: {self.total_bytes}")
@@ -161,16 +165,20 @@ class Niblette(irc.bot.SingleServerIRCBot):
             self.file.write(data)
             self.received_bytes = self.received_bytes + len(data)
 
-            if(self.received_bytes % 137 == 0):
+            if(self.received_bytes % 237 == 0):
                 print(f"Downloaded Bytes: {self.received_bytes}")
 
-            self.dccTries = 0
-            self.keepAlive(connection)
+            connection.send_bytes(struct.pack("!I", self.received_bytes))
+
             if (self.received_bytes == self.total_bytes):
                 print("")
                 print("Finished, disconnecting.")
                 self.file.close()
                 self.downloader.disconnect()
+                if(self.queue.count() > 0):
+                    c, e = self.queue[0]
+                    self.on_ctcp(c, e)
+                    self.queue.remove((c, e))
         except Exception as ex:
             print(f"Error: {ex}")
 
