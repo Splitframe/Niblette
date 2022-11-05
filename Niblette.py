@@ -166,6 +166,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
             print(sex)
             self.downloader.disconnect("Connection reset by peer.")
             self.file.close()
+            self.filedata.clear()
             if (len(self.queue) > 0):
                 c, e = self.queue[0]
                 self.on_ctcp(c, e)
@@ -187,18 +188,21 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 self.file.close()
                 self.downloader.disconnect()
             data = event.arguments[0]
-            self.file.write(data)
-            #self.filedata.append(data)
+            #self.file.write(data)
+            self.filedata.append(data)
             self.received_bytes = self.received_bytes + len(data)
 
-            if(len(self.filedata) % 100000 == 0):
-                print(f"Downloaded Bytes: {self.received_bytes}")
+            if(len(self.filedata) % 1000000 == 0):
+                print(f"Downloaded: {self.received_bytes / 1000000}MB")
 
             # connection.send_bytes(struct.pack("!I", self.received_bytes))
             self.send_bytes(struct.pack("!I", self.received_bytes))
+            time.sleep(1 / 1000000.0)
+
 
             if (self.received_bytes == self.total_bytes):
-                print("")
+                print("Finished download, writing file...")
+                self.drainBuffer()
                 print("Finished, disconnecting.")
                 self.file.close()
                 self.downloader.disconnect()
@@ -208,6 +212,12 @@ class Niblette(irc.bot.SingleServerIRCBot):
                     self.queue.remove((c, e))
         except Exception as ex:
             print(f"Error: {ex}")
+
+    def drainBuffer(self):
+        for data in self.filedata:
+            self.file.write(data)
+        self.filedata.clear()
+
 
     # def on_dcc_disconnect(self, connection, event):
     #     if(self.received_bytes != self.total_bytes):
