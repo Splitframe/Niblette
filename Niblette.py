@@ -201,7 +201,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
 
             # connection.send_bytes(struct.pack("!I", self.received_bytes))
             self.send_bytes(struct.pack("!I", self.received_bytes))
-            time.sleep(1 / 250.0)
+            time.sleep(1 / 200.0)
 
 
             if (self.received_bytes == self.total_bytes):
