@@ -195,7 +195,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
             # self.filedata.append(data)
             self.received_bytes = self.received_bytes + len(data)
 
-            if(self.received_bytes % (1337 * 999) == 0):
+            if(self.received_bytes % 1337 == 0):
                 print(f"Downloaded: {int(self.received_bytes / 1000000)}MB")
 
             # connection.send_bytes(struct.pack("!I", self.received_bytes))
