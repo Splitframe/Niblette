@@ -213,10 +213,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 print("Finished, disconnecting.")
                 self.file.close()
                 self.downloader.disconnect()
-                if(len(self.queue) > 0):
-                    c, e = self.queue[0]
-                    self.on_ctcp(c, e)
-                    self.queue.remove((c, e))
+                if (len(self.queue) > 0):
+                    target, msg = self.queue[0]
+                    self.connection.privmsg(target, msg)
+                    self.queue.remove((target, msg))
         except Exception as ex:
             print(f"Error: {ex}")
 
