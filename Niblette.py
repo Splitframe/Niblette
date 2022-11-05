@@ -99,8 +99,9 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 print(f"Relevant Message from Source Bot: {message}.")
                 match = Niblette.botPattern.findall(message.strip("'"))
                 if(match):
-                    print("Conditions met, requesting download.")
-                    connection.privmsg("CR-HOLLAND|NEW", f"{match[0]}")
+                    print("Conditions met, queuing download.")
+                    self.queue.append(("CR-HOLLAND|NEW", f"{match[0]}"))
+
         return
 
     def do_command(self, event, cmd):
@@ -144,9 +145,9 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if (os.path.exists(fullpath)):
             print("A file named", fullpath, "already exists. Refusing to save it.")
             return
-        if (self.downloader.connected == True):
-            self.queue.append((connection, event))
-            return
+        # if (self.downloader.connected == True):
+        #     self.queue.append((connection, event))
+        #     return
         print("Downloading ", filename)
         self.total_bytes = int(size)
         self.currentTransaction = (connection, event)
@@ -170,20 +171,11 @@ class Niblette(irc.bot.SingleServerIRCBot):
             self.downloader.disconnect("Connection reset by peer.")
             self.file.close()
             os.remove(self.file.name)
-            # self.filedata.clear()
             if (len(self.queue) > 0):
-                c, e = self.queue[0]
-                self.on_ctcp(c, e)
-                self.queue.remove((c, e))
-            # connection, event = self.currentTransaction
-            # payload = event.arguments[1]
-            # parts = shlex.split(payload)
-            # command, filename, peer_address, peer_port, size = parts
-            # peer_address = irc.client.ip_numstr_to_quad(peer_address)
-            # peer_port = int(peer_port)
-            # self.downloader = self.dcc("raw")
-            # self.downloader = self.downloader.connect(peer_address, peer_port)
-            # self.send_bytes(struct.pack("!I", self.received_bytes))
+                target, msg = self.queue[0]
+                self.connection.privmsg(target, msg)
+                self.queue.remove((target, msg))
+
 
     def on_dccmsg(self, connection, event):
         try:
