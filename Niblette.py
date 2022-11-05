@@ -8,6 +8,7 @@ import atexit
 import re
 import threading
 import logging
+import traceback
 
 #import sqlite3 as sl
 import time
@@ -164,9 +165,10 @@ class Niblette(irc.bot.SingleServerIRCBot):
             self.downloader.socket.send(bytes)
         except socket.error as sex:
             print(sex)
+            print(traceback.format_exc())
             self.downloader.disconnect("Connection reset by peer.")
             self.file.close()
-            self.filedata.clear()
+            # self.filedata.clear()
             if (len(self.queue) > 0):
                 c, e = self.queue[0]
                 self.on_ctcp(c, e)
@@ -189,20 +191,20 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 self.downloader.disconnect()
             data = event.arguments[0]
             #self.file.write(data)
-            self.filedata.append(data)
+            # self.filedata.append(data)
             self.received_bytes = self.received_bytes + len(data)
 
-            if(len(self.filedata) % 1337 == 0):
+            if(self.received_bytes % (1337 * 999) == 0):
                 print(f"Downloaded: {int(self.received_bytes / 1000000)}MB")
 
             # connection.send_bytes(struct.pack("!I", self.received_bytes))
             self.send_bytes(struct.pack("!I", self.received_bytes))
-            # time.sleep(1 / 1000000.0)
+            time.sleep(2 / 1000000.0)
 
 
             if (self.received_bytes == self.total_bytes):
-                print("Finished download, writing file...")
-                self.drainBuffer()
+                # print("Finished download, writing file...")
+                # self.drainBuffer()
                 print("Finished, disconnecting.")
                 self.file.close()
                 self.downloader.disconnect()
