@@ -1,3 +1,4 @@
+import socket
 import string
 import sys
 import os
@@ -47,7 +48,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
     botPattern    = re.compile(r"(?<=MSG CR-HOLLAND\|NEW ).*$")
     showPattern   = re.compile(r"(?<=\])([^-]{3,}?)(?=\-)")
     seasonPattern = re.compile(r"S(\d+)")
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
     def __init__(self, channel, nickname, server, port=6667):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
@@ -62,6 +63,8 @@ class Niblette(irc.bot.SingleServerIRCBot):
         self.dccTries = 0
         self.log = logging.getLogger(__name__)
         self.queue = []
+        self.filedata = []
+        self.currentTransaction = None
 
     # def init_database(self):
     #     self.db = sl.connect("niblette.db")
@@ -145,6 +148,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
             return
         print("Downloading ", filename)
         self.total_bytes = int(size)
+        self.currentTransaction = (connection, event)
         print(f"Size: {self.total_bytes}")
         self.received_bytes = 0
         if (self.file is not None):
@@ -155,6 +159,27 @@ class Niblette(irc.bot.SingleServerIRCBot):
         self.downloader = self.dcc("raw")
         self.downloader = self.downloader.connect(peer_address, peer_port)
 
+    def send_bytes(self, bytes):
+        try:
+            self.downloader.socket.send(bytes)
+        except socket.error as sex:
+            print(sex)
+            self.downloader.disconnect("Connection reset by peer.")
+            self.file.close()
+            if (len(self.queue) > 0):
+                c, e = self.queue[0]
+                self.on_ctcp(c, e)
+                self.queue.remove((c, e))
+            # connection, event = self.currentTransaction
+            # payload = event.arguments[1]
+            # parts = shlex.split(payload)
+            # command, filename, peer_address, peer_port, size = parts
+            # peer_address = irc.client.ip_numstr_to_quad(peer_address)
+            # peer_port = int(peer_port)
+            # self.downloader = self.dcc("raw")
+            # self.downloader = self.downloader.connect(peer_address, peer_port)
+            # self.send_bytes(struct.pack("!I", self.received_bytes))
+
     def on_dccmsg(self, connection, event):
         try:
             if (len(event.arguments) != 1):
@@ -163,24 +188,31 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 self.downloader.disconnect()
             data = event.arguments[0]
             self.file.write(data)
+            #self.filedata.append(data)
             self.received_bytes = self.received_bytes + len(data)
 
-            if(self.received_bytes % 237 == 0):
+            if(len(self.filedata) % 100000 == 0):
                 print(f"Downloaded Bytes: {self.received_bytes}")
 
-            connection.send_bytes(struct.pack("!I", self.received_bytes))
+            # connection.send_bytes(struct.pack("!I", self.received_bytes))
+            self.send_bytes(struct.pack("!I", self.received_bytes))
 
             if (self.received_bytes == self.total_bytes):
                 print("")
                 print("Finished, disconnecting.")
                 self.file.close()
                 self.downloader.disconnect()
-                if(self.queue.count() > 0):
+                if(len(self.queue) > 0):
                     c, e = self.queue[0]
                     self.on_ctcp(c, e)
                     self.queue.remove((c, e))
         except Exception as ex:
             print(f"Error: {ex}")
+
+    # def on_dcc_disconnect(self, connection, event):
+    #     if(self.received_bytes != self.total_bytes):
+    #         return
+
 
     def getFileSize(self, filename):
         if (os.path.exists(filename)):
