@@ -87,7 +87,12 @@ class Niblette(irc.bot.SingleServerIRCBot):
         if(match):
             print(f"Regex Match, output: {match[0]}")
             connection.privmsg(nickname, f"Regex match output: {match[0]}")
-            connection.privmsg("CR-HOLLAND|NEW", f"{match[0]}")
+            self.queue.append(("CR-HOLLAND|NEW", f"{match[0]}"))
+            if (self.downloader.connected != True):
+                if (len(self.queue) > 0):
+                    target, msg = self.queue[0]
+                    self.connection.privmsg(target, msg)
+                    self.queue.remove((target, msg))
 
     def on_pubmsg(self, connection, event):
 
@@ -101,6 +106,12 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 if(match):
                     print("Conditions met, queuing download.")
                     self.queue.append(("CR-HOLLAND|NEW", f"{match[0]}"))
+                    if (self.downloader.connected != True):
+                        if (len(self.queue) > 0):
+                            target, msg = self.queue[0]
+                            self.connection.privmsg(target, msg)
+                            self.queue.remove((target, msg))
+
 
         return
 
