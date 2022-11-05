@@ -168,6 +168,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
             print(traceback.format_exc())
             self.downloader.disconnect("Connection reset by peer.")
             self.file.close()
+            os.remove(self.file.name)
             # self.filedata.clear()
             if (len(self.queue) > 0):
                 c, e = self.queue[0]
@@ -190,7 +191,7 @@ class Niblette(irc.bot.SingleServerIRCBot):
                 self.file.close()
                 self.downloader.disconnect()
             data = event.arguments[0]
-            #self.file.write(data)
+            self.file.write(data)
             # self.filedata.append(data)
             self.received_bytes = self.received_bytes + len(data)
 
