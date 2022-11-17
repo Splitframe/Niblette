@@ -79,6 +79,9 @@ class Niblette(irc.bot.SingleServerIRCBot):
     def on_welcome(self, connection, event):
         connection.join(self.channel)
 
+    def on_disconnect(self, connection, event):
+        raise Exception("Derp")
+
     def on_privmsg(self, connection, event):
         nickname = event.source.nick
         message: str = event.arguments[0]
@@ -218,7 +221,15 @@ class Niblette(irc.bot.SingleServerIRCBot):
                     self.connection.privmsg(target, msg)
                     self.queue.remove((target, msg))
         except Exception as ex:
-            print(f"Error: {ex}")
+            print(ex)
+            print(traceback.format_exc())
+            self.downloader.disconnect("Connection reset by peer.")
+            self.file.close()
+            os.remove(self.file.name)
+            if (len(self.queue) > 0):
+                target, msg = self.queue[0]
+                self.connection.privmsg(target, msg)
+                self.queue.remove((target, msg))
 
     def drainBuffer(self):
         for data in self.filedata:
@@ -311,15 +322,17 @@ def main():
     print(f"Starting Bot.")
     bot = Niblette(channel, nickname, server, port)
 
-    try:
-        bot.start()
-    except KeyboardInterrupt:
-        bot.die()
-    except Exception as ex:
-        print(f"Error: {ex}")
-        print("Attempting to restart bot.")
-        bot.die()
-        bot.start()
+    while(True):
+        try:
+            bot.start()
+        except KeyboardInterrupt:
+            bot.die()
+            break
+        except Exception as ex:
+            print(f"Error: {ex}")
+            print("Attempting to restart bot.")
+            bot.die()
+            bot.start()
 
 
 if __name__ == "__main__":
