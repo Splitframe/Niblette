@@ -19,6 +19,8 @@ val koinVersion = "3.3.2"
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.1.2")
+    implementation("com.mysql:mysql-connector-j:8.0.32")
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
@@ -36,3 +38,4 @@ tasks.withType<KotlinCompile> {
 application {
     mainClass.set("MainKt")
 }
+
