@@ -12,11 +12,6 @@ fun databaseModule(databaseConnection: DatabaseConnection) = module {
             driver = databaseConnection.driver,
             user = databaseConnection.user,
             password = databaseConnection.password
-        ).also {
-            transaction(it){
-
-            }
-        }
+        )
     }
-
 }
