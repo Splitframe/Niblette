@@ -11,7 +11,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class ShowRepository(val mariaDb: Database) {
     init {
-        println(getShows())
     }
     fun getShows() = transaction(mariaDb) {
         ShowTable

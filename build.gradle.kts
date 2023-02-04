@@ -27,6 +27,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation(files("/lib/pircbotx/pircbotx.jar"))
+    implementation("org.slf4j:slf4j-api:2.0.6")
+    implementation("org.slf4j:slf4j-simple:2.0.6")
+    implementation("ch.qos.logback:logback-core:1.4.5")
 }
 
 tasks.test {

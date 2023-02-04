@@ -8,7 +8,7 @@ import org.koin.dsl.module
 fun databaseModule(databaseConnection: DatabaseConnection) = module {
     single(createdAtStart = true) {
         Database.connect(
-            url = "jdbc:mariadb://${databaseConnection.server}:${databaseConnection.port}",
+            url = "jdbc:mariadb://${databaseConnection.server}:${databaseConnection.port}/Niblette",
             driver = databaseConnection.driver,
             user = databaseConnection.user,
             password = databaseConnection.password
