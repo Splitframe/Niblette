@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -6,7 +7,7 @@ plugins {
     application
 }
 
-group = "me.hilde"
+group = "de.niblette"
 //version = "1.0-SNAPSHOT"
 
 repositories {
@@ -36,6 +37,12 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.4.5")
     implementation("org.pircbotx:pircbotx:2.3")
 //    implementation(files("/lib/pircbotx/pircbotx.jar"))
+}
+
+tasks.withType<ShadowJar> {
+    manifest {
+        attributes(Pair("Main-Class","de.niblette.Mainkt.class"))
+    }
 }
 
 tasks.test {
