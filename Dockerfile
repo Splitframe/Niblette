@@ -1,7 +1,7 @@
-ARG VERSION=19-al2
+ARG VERSION=19
 ARG DISTRIBUTOR=amazoncorretto
 
-FROM ${DISTRIBUTOR}:${VERSION}-jdk as BUILD
+FROM ${DISTRIBUTOR}:${VERSION}-al2-jdk as BUILD
 #RUN microdnf install findutils
 
 COPY . /src
