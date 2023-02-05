@@ -12,6 +12,14 @@ import java.io.FileInputStream
 import java.util.*
 
 fun main(args: Array<String>) {
+    while(true) {
+        println("Running...")
+        Thread.sleep(1000)
+    }
+//    start()
+}
+
+fun start() {
     val prop = Properties().also {
         it.load(FileInputStream("src/main/resources/application.conf"))
     }
@@ -22,7 +30,6 @@ fun main(args: Array<String>) {
         driver = prop.getProperty("database.driver"),
         user = prop.getProperty("database.user"),
         password = prop.getProperty("database.password"),
-
     )
 
     migrateDatabase(databaseConnection)
@@ -69,9 +76,4 @@ fun main(args: Array<String>) {
 -Download entgegen nehmen.
 -Datei irgendwo abspeichern. (Datei richtig im Jellyfin System hinterlegen.)
 -Public Chat ueberwachen & Neue Folgen runterladen.
--
-
-
-
-
  */
