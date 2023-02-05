@@ -1,13 +1,14 @@
-ARG VERSION=19
+ARG VERSION=19-al2
+ARG DISTRIBUTOR=amazoncoretto
 
-FROM java:${VERSION}-jdk as BUILD
+FROM ${DISTRIBUTOR}:${VERSION}-jdk as BUILD
 RUN microdnf install findutils
 
 COPY . /src
 WORKDIR /src
 RUN ./gradlew --no-daemon shadowJar
 
-FROM java:${VERSION}-jre
+FROM ${DISTRIBUTOR}:${VERSION}-jre
 
 COPY --from=BUILD /src/build/libs/Niblette.jar /bin/runner/run.jar
 WORKDIR /bin/runner
