@@ -11,7 +11,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     flatDir {
-        dirs("/lib")
+        dirs("lib")
     }
     mavenCentral()
 }
