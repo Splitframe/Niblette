@@ -10,7 +10,7 @@ RUN ./gradlew --no-daemon shadowJar
 
 FROM ${DISTRIBUTOR}:${VERSION}
 
-COPY --from=BUILD /src/build/libs/Niblette.jar /bin/runner/run.jar
+COPY --from=BUILD /src/build/libs/Niblette-all.jar /bin/runner/run.jar
 WORKDIR /bin/runner
 
 CMD ["java","-jar","run.jar"]
