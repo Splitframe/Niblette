@@ -14,6 +14,7 @@ out/
 /tmp
 /intellij
 workspace.xml
+application.conf
 *.versionsBackup
 /idea/testData/debugger/tinyApp/classes*
 /jps-plugin/testData/kannotator
@@ -75,4 +76,3 @@ outTmp/
 /test.output
 /kotlin-native/dist
 kotlin-ide/
-application.conf
