@@ -12,11 +12,11 @@ import java.io.FileInputStream
 import java.util.*
 
 fun main(args: Array<String>) {
-    while(true) {
-        println("Running...")
-        Thread.sleep(1000)
-    }
-//    start()
+//    while(true) {
+//        println("Running...")
+//        Thread.sleep(1000)
+//    }
+    start()
 }
 
 fun start() {
@@ -45,7 +45,7 @@ fun start() {
 
     val config: Configuration = Configuration.Builder()
         .setName("Niblette_Kotlin") //Nick of the bot. CHANGE IN YOUR CODE
-        .setLogin("PircBotXUser") //Login part of hostmask, eg name:login@host
+//        .setLogin("PircBotXUser") //Login part of hostmask, eg name:login@host
         .setAutoNickChange(true)
         .addServer("irc.rizon.net")
         .addAutoJoinChannel("#NIBL") //Join #pircbotx channel on connect
@@ -57,6 +57,7 @@ fun start() {
     GlobalScope.async {
         myBot.startBot()
     }
+    Thread.sleep(5000)
     println("test")
     while (!myBot.isConnected) {
         Thread.sleep(100)
