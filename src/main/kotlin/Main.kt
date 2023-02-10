@@ -5,6 +5,8 @@ import database.show.ShowRepository
 import database.show.showModule
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import bot.listener.CallbackListener
+import bot.listener.botModule
 import org.koin.core.context.startKoin
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
@@ -34,35 +36,31 @@ fun start() {
 
     migrateDatabase(databaseConnection)
 
-    val koinContext = startKoin {
-        modules(
-            showModule(),
-            databaseModule(databaseConnection)
-        )
-    }
-    println(koinContext.koin.get<ShowRepository>().getShows().first().name)
-    println(PircBotX.VERSION)
-
     val config: Configuration = Configuration.Builder()
         .setName("Niblette_Kotlin") //Nick of the bot. CHANGE IN YOUR CODE
 //        .setLogin("PircBotXUser") //Login part of hostmask, eg name:login@host
         .setAutoNickChange(true)
         .addServer("irc.rizon.net")
         .addAutoJoinChannel("#NIBL") //Join #pircbotx channel on connect
+        .addListener(CallbackListener())
         .buildConfiguration() //Create an immutable configuration from this builder
 
-    val myBot = PircBotX(config)
+    val koinContext = startKoin {
+        modules(
+            showModule(),
+            databaseModule(databaseConnection),
+            botModule(config)
+        )
+    }
 
+    println(koinContext.koin.get<ShowRepository>().getShows().first().name)
+    println(PircBotX.VERSION)
+
+    val myBot = koinContext.koin.get<PircBotX>()
 
     GlobalScope.async {
         myBot.startBot()
     }
-    Thread.sleep(5000)
-    println("test")
-    while (!myBot.isConnected) {
-        Thread.sleep(100)
-    }
-    myBot.sendIRC().message("#NIBL", "!s Bleach")
     while (true){
         Thread.sleep(1000)
     }
@@ -70,10 +68,10 @@ fun start() {
 
 
 /*
--Im IRC Chat einloggen.
+-Im IRC Chat einloggen. X
 -Nibl.co msg fuer entsprechenden Anime raussuchen.
 -Episodeninformationen rausparsen. (Name, Season, Episode, Aufloesung)
--Im IRC Chat bot mit msg anwhispern.
+-Im IRC Chat bot mit msg anwhispern. X
 -Download entgegen nehmen.
 -Datei irgendwo abspeichern. (Datei richtig im Jellyfin System hinterlegen.)
 -Public Chat ueberwachen & Neue Folgen runterladen.
