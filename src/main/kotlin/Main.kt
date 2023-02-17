@@ -72,7 +72,7 @@ fun start() {
 -Nibl.co msg fuer entsprechenden Anime raussuchen.
 -Episodeninformationen rausparsen. (Name, Season, Episode, Aufloesung)
 -Im IRC Chat bot mit msg anwhispern. X
--Download entgegen nehmen.
--Datei irgendwo abspeichern. (Datei richtig im Jellyfin System hinterlegen.)
+-Download entgegen nehmen. X
+-Datei irgendwo abspeichern. X (Datei richtig im Jellyfin System hinterlegen.)
 -Public Chat ueberwachen & Neue Folgen runterladen.
  */

@@ -4,6 +4,7 @@ import org.pircbotx.PircBotX
 import org.pircbotx.dcc.ReceiveFileTransfer
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.IncomingFileTransferEvent
+import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.pircbotx.hooks.types.GenericMessageEvent
 import java.nio.file.Files
@@ -24,6 +25,31 @@ class CallbackListener : ListenerAdapter() {
             event.getBot<PircBotX>().sendIRC().message("CR-HOLLAND|NEW", "xdcc send #4226")
         }
     }
+
+    override fun onMessage(event: MessageEvent) {
+
+        val nickname: String = event.user?.nick ?: ""
+        val message: String = event.message
+        val botPattern = Regex("(?<=MSG CR-HOLLAND\\|NEW ).*\$")
+        val showNamePattern = Regex("(?<=\\])([^-]{3,}?)(?=\\-)")
+
+        println("Sender: $nickname, Message: $message")
+
+        if (nickname == "CR-HOLLAND|NEW"){
+            if (message.contains("(1080p)")){
+                println("Relevant Message from $nickname : $message")
+
+                val match = botPattern.findAll(message)
+
+                if (match.any()) {
+                    println("Conditions met, queuing download.")
+                    event.getBot<PircBotX>().sendIRC().message(nickname, match.first().value)
+                }
+            }
+        }
+    }
+
+
 
     override fun onIncomingFileTransfer(event: IncomingFileTransferEvent) {
         super.onIncomingFileTransfer(event)
