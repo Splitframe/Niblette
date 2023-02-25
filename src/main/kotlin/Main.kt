@@ -7,9 +7,19 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import bot.listener.CallbackListener
 import bot.listener.botModule
+import io.ktor.server.application.*
+import io.ktor.server.application.hooks.CallFailed.install
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import kotlinx.coroutines.launch
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext.get
 import org.koin.core.context.startKoin
+import org.koin.ktor.ext.get
+import org.koin.ktor.plugin.Koin
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
+import routing.configureRouting
 import java.io.FileInputStream
 import java.util.*
 
@@ -18,10 +28,11 @@ fun main(args: Array<String>) {
 //        println("Running...")
 //        Thread.sleep(1000)
 //    }
-    start()
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::start)
+        .start(wait = true)
 }
 
-fun start() {
+fun Application.start() {
     val prop = Properties().also {
         it.load(FileInputStream("src/main/resources/application.conf"))
     }
@@ -41,30 +52,31 @@ fun start() {
 //        .setLogin("PircBotXUser") //Login part of hostmask, eg name:login@host
         .setAutoNickChange(true)
         .addServer("irc.rizon.net")
-        .addAutoJoinChannel("#NIBL") //Join #pircbotx channel on connect
+        .addAutoJoinChannel("#NIBLM") //Join #pircbotx channel on connect
         .addListener(CallbackListener())
         .buildConfiguration() //Create an immutable configuration from this builder
 
-    val koinContext = startKoin {
+//    val koinContext = startKoin {
+//        modules(
+//            showModule(),
+//            databaseModule(databaseConnection),
+//            botModule(config)
+//        )
+//    }
+    install(Koin) {
         modules(
             showModule(),
             databaseModule(databaseConnection),
             botModule(config)
         )
     }
-
-    println(koinContext.koin.get<ShowRepository>().getShows().first().name)
-    println(PircBotX.VERSION)
-
-    val myBot = koinContext.koin.get<PircBotX>()
-
-    GlobalScope.async {
-        myBot.startBot()
-    }
-    while (true){
-        Thread.sleep(1000)
-    }
+//    async { mybot.startBot() }
+//    GlobalScope.launch {
+//        mybot.startBot()
+//    }
+    configureRouting()
 }
+
 
 
 /*
