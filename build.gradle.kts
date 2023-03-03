@@ -36,6 +36,11 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("ch.qos.logback:logback-core:1.4.5")
     implementation("org.pircbotx:pircbotx:2.3")
+    implementation("io.ktor:ktor-server-core:2.2.3")
+    implementation("io.ktor:ktor-server-netty:2.2.3")
+    implementation("io.insert-koin:koin-ktor:3.3.1")
+
+
 //    implementation(files("/lib/pircbotx/pircbotx.jar"))
 }
 

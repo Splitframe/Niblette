@@ -6,5 +6,4 @@ fun showModule() = module {
     single<ShowRepository>() {
         ShowRepository(mariaDb = get())
     }
-
 }

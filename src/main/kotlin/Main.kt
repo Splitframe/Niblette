@@ -5,9 +5,21 @@ import database.show.ShowRepository
 import database.show.showModule
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import bot.listener.CallbackListener
+import bot.listener.botModule
+import io.ktor.server.application.*
+import io.ktor.server.application.hooks.CallFailed.install
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import kotlinx.coroutines.launch
+import org.koin.core.Koin
+import org.koin.core.context.GlobalContext.get
 import org.koin.core.context.startKoin
+import org.koin.ktor.ext.get
+import org.koin.ktor.plugin.Koin
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
+import routing.configureRouting
 import java.io.FileInputStream
 import java.util.*
 
@@ -16,10 +28,11 @@ fun main(args: Array<String>) {
 //        println("Running...")
 //        Thread.sleep(1000)
 //    }
-    start()
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::start)
+        .start(wait = true)
 }
 
-fun start() {
+fun Application.start() {
     val prop = Properties().also {
         it.load(FileInputStream("src/main/resources/application.conf"))
     }
@@ -34,47 +47,44 @@ fun start() {
 
     migrateDatabase(databaseConnection)
 
-    val koinContext = startKoin {
-        modules(
-            showModule(),
-            databaseModule(databaseConnection)
-        )
-    }
-    println(koinContext.koin.get<ShowRepository>().getShows().first().name)
-    println(PircBotX.VERSION)
-
     val config: Configuration = Configuration.Builder()
         .setName("Niblette_Kotlin") //Nick of the bot. CHANGE IN YOUR CODE
 //        .setLogin("PircBotXUser") //Login part of hostmask, eg name:login@host
         .setAutoNickChange(true)
         .addServer("irc.rizon.net")
-        .addAutoJoinChannel("#NIBL") //Join #pircbotx channel on connect
+        .addAutoJoinChannel("#NIBLM") //Join #pircbotx channel on connect
+        .addListener(CallbackListener())
         .buildConfiguration() //Create an immutable configuration from this builder
 
-    val myBot = PircBotX(config)
-
-
-    GlobalScope.async {
-        myBot.startBot()
+//    val koinContext = startKoin {
+//        modules(
+//            showModule(),
+//            databaseModule(databaseConnection),
+//            botModule(config)
+//        )
+//    }
+    install(Koin) {
+        modules(
+            showModule(),
+            databaseModule(databaseConnection),
+            botModule(config)
+        )
     }
-    Thread.sleep(5000)
-    println("test")
-    while (!myBot.isConnected) {
-        Thread.sleep(100)
-    }
-    myBot.sendIRC().message("#NIBL", "!s Bleach")
-    while (true){
-        Thread.sleep(1000)
-    }
+//    async { mybot.startBot() }
+//    GlobalScope.launch {
+//        mybot.startBot()
+//    }
+    configureRouting()
 }
 
 
+
 /*
--Im IRC Chat einloggen.
+-Im IRC Chat einloggen. X
 -Nibl.co msg fuer entsprechenden Anime raussuchen.
 -Episodeninformationen rausparsen. (Name, Season, Episode, Aufloesung)
--Im IRC Chat bot mit msg anwhispern.
--Download entgegen nehmen.
--Datei irgendwo abspeichern. (Datei richtig im Jellyfin System hinterlegen.)
+-Im IRC Chat bot mit msg anwhispern. X
+-Download entgegen nehmen. X
+-Datei irgendwo abspeichern. X (Datei richtig im Jellyfin System hinterlegen.)
 -Public Chat ueberwachen & Neue Folgen runterladen.
  */
