@@ -76,3 +76,5 @@ outTmp/
 /test.output
 /kotlin-native/dist
 kotlin-ide/
+/.idea/vcs.xml
+/.idea/dataSources.xml
