@@ -7,6 +7,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import bot.listener.CallbackListener
 import bot.listener.botModule
+import database.request.requestModule
+import database.show.aliasModule
+import database.show.seasonModule
 import io.ktor.server.application.*
 import io.ktor.server.application.hooks.CallFailed.install
 import io.ktor.server.engine.*
@@ -66,15 +69,25 @@ fun Application.start() {
     install(Koin) {
         modules(
             showModule(),
+            requestModule(),
+            sourceIRCModule(),
+            seasonModule(),
+            aliasModule(),
             databaseModule(databaseConnection),
             botModule(config)
         )
     }
+    var testShowRepo = get<ShowRepository>()
+
+    testShowRepo.insertShows("Attack on Titan", "Anime")
+
 //    async { mybot.startBot() }
 //    GlobalScope.launch {
 //        mybot.startBot()
 //    }
     configureRouting()
+
+
 }
 
 
