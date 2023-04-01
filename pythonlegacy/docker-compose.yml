@@ -1,9 +1,0 @@
-version: '3.3'
-
-services:
-  niblette:
-    image: niblette:0.1
-    restart: unless-stopped
-    volumes:
-      - /srv/dev-disk-by-id-md-name-Vulcano-Vault/share:/usr/download
-
