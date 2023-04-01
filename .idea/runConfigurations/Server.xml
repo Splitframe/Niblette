@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Server" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="de.niblette.ServerKt" />
+    <module name="Niblette.backendMain" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
