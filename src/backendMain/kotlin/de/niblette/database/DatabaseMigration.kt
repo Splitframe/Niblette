@@ -10,7 +10,8 @@ fun migrateDatabase(databaseConnection: DatabaseConnection) {
             databaseConnection.user,
             databaseConnection.password
         )
-        .defaultSchema("Niblette")
+        .defaultSchema("niblette")
+        .validateMigrationNaming(true)
         .load()
         .migrate()
 }

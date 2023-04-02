@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Server" type="JetRunConfigurationType">
+    <envs>
+      <env name="DATABASE" value="localhost" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="de.niblette.ServerKt" />
     <module name="Niblette.backendMain" />
     <shortenClasspath name="NONE" />

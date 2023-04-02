@@ -4,6 +4,8 @@ services:
   niblette:
     image: niblette:0.1
     restart: unless-stopped
+    environment:
+      DATABASE: 192.168.1.20
 
   db:
     image: mariadb:latest
