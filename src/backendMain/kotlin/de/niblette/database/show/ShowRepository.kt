@@ -17,7 +17,7 @@ class ShowRepository(val mariaDb: Database) {
 
     }
 
-    fun insertShows(showName: String, showCategory: String) = transaction {mariaDb
+    fun insertShows(showName: String, showCategory: String) = transaction(mariaDb) {
         ShowTable
             .insertAndGetId {
                 it[name] = showName
