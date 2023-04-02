@@ -10,8 +10,8 @@ services:
     command: --max_allowed_packet=536870912
     volumes:
       - ./mysql:/var/lib/mysql
-#    ports:
-#      - 3311:3306
+    ports:
+      - 3306:3306
     environment:
       MARIADB_ROOT_PASSWORD: sf87h
       MARIADB_DATABASE: niblette
