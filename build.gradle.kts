@@ -1,13 +1,14 @@
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+//import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("multiplatform") version "1.8.10"
-
     application
 }
 
 
-group = "de.splitframe"
+group = "de.niblette"
 version = "1.0-SNAPSHOT"
 
 //val devMode = properties.containsKey("jsWatch")
@@ -53,7 +54,6 @@ kotlin {
                 mavenCentral()
             }
 
-
             dependencies {
                 implementation("io.ktor:ktor-server-netty:2.0.2")
                 implementation("io.ktor:ktor-server-html-builder-jvm:2.0.2")
@@ -95,6 +95,12 @@ kotlin {
 application {
 //    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=true")
     mainClass.set("de.niblette.ServerKt")
+}
+
+tasks.withType<ShadowJar> {
+    manifest {
+        attributes(Pair("Main-Class","de.niblette.Serverkt.class"))
+    }
 }
 
 //tasks.named<Copy>("backendProcessResources") {

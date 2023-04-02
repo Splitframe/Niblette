@@ -20,7 +20,7 @@ val Welcome = FC<WelcomeProps> { props ->
             backgroundColor = rgb(8, 97, 22)
             color = rgb(56, 246, 137)
         }
-        +"OOF, $name"
+        +"Hello, $name"
     }
     input {
         css {
