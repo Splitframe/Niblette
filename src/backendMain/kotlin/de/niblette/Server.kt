@@ -12,8 +12,10 @@ import database.show.aliasModule
 import database.show.seasonModule
 import database.show.showModule
 import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.netty.*
 import org.koin.ktor.ext.get
+import org.koin.ktor.ext.getProperty
 import org.koin.ktor.plugin.Koin
 import routing.configureRouting
 import sourceIRCModule
@@ -21,21 +23,23 @@ import org.pircbotx.Configuration
 import java.io.FileInputStream
 import java.util.*
 
+
 fun main(args: Array<String>) = EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.entry() {
 
-    val prop = Properties().also {
-        it.load(FileInputStream("src/backendMain/resources/database.conf"))
-    }
-    println(prop.getProperty("database.server"))
+//    val prop = Properties().also {
+//        it.load(FileInputStream("src/backendMain/resources/database.conf"))
+//    }
+//    println(prop.getProperty("database.server"))
+
     val databaseConnection = DatabaseConnection(
-        server = prop.getProperty("database.server"),
-        port = prop.getProperty("database.port").toInt(),
-        driver = prop.getProperty("database.driver"),
-        user = prop.getProperty("database.user"),
-        password = prop.getProperty("database.password"),
+        server   = environment.config.property("database.server").getString(),
+        port     = environment.config.property("database.port").getString().toInt(),
+        driver   = environment.config.property("database.driver").getString(),
+        user     = environment.config.property("database.user").getString(),
+        password = environment.config.property("database.password").getString(),
     )
 
     migrateDatabase(databaseConnection)

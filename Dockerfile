@@ -6,11 +6,11 @@ FROM ${DISTRIBUTOR}:${VERSION}-al2-jdk as BUILD
 
 COPY . /src
 WORKDIR /src
-RUN ./gradlew --no-daemon shadowJar
+RUN ./gradlew --no-daemon shadowJar --console plain
 
 FROM ${DISTRIBUTOR}:${VERSION}
 
-COPY --from=BUILD /src/build/libs/Niblette-all.jar /bin/runner/run.jar
+COPY --from=BUILD /src/build/libs/Niblette-1.0-SNAPSHOT-all.jar /bin/runner/run.jar
 WORKDIR /bin/runner
 
 CMD ["java","-jar","run.jar"]

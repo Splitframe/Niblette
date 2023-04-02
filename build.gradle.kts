@@ -56,6 +56,7 @@ kotlin {
 
             dependencies {
                 implementation("io.ktor:ktor-server-netty:2.0.2")
+                implementation("io.ktor:ktor-server-core:2.0.2")
                 implementation("io.ktor:ktor-server-html-builder-jvm:2.0.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
                 implementation("org.slf4j:slf4j-api:2.0.6")
