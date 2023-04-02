@@ -4,7 +4,7 @@ ARG DISTRIBUTOR=amazoncorretto
 FROM ${DISTRIBUTOR}:${VERSION}-al2-jdk as BUILD
 #RUN microdnf install findutils
 
-COPY ../Niblette /src
+COPY . /src
 WORKDIR /src
 RUN ./gradlew --no-daemon shadowJar
 
