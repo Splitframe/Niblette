@@ -102,7 +102,12 @@ tasks.withType<ShadowJar> {
     manifest {
         attributes(Pair("Main-Class","de.niblette.Serverkt.class"))
     }
+    mergeServiceFiles {
+        setPath("META-INF/services/org.flywaydb.core.extensibility.Plugin")
+    }
 }
+
+
 
 //tasks.named<Copy>("backendProcessResources") {
 //    val frontendBrowserDistribution = tasks.named("frontendBrowserDistribution")
