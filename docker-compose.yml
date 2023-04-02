@@ -5,3 +5,13 @@ services:
     image: niblette:0.1
     restart: unless-stopped
 
+  db:
+    image: mariadb:latest
+    command: --max_allowed_packet=536870912
+    volumes:
+      - ./mysql:/var/lib/mysql
+#    ports:
+#      - 3311:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: sf87h
+      MYSQL_DATABASE: niblette
