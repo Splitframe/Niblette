@@ -13,5 +13,5 @@ services:
 #    ports:
 #      - 3311:3306
     environment:
-      MYSQL_ROOT_PASSWORD: sf87h
-      MYSQL_DATABASE: niblette
+      MARIADB_ROOT_PASSWORD: sf87h
+      MARIADB_DATABASE: niblette
