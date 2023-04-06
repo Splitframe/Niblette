@@ -37,8 +37,26 @@ kotlin {
         }
     }
     sourceSets {
-        val exposedVersion = "0.40.1"
-        val koinVersion = "3.3.2"
+        fun kotlinWrappers(target: String): String =
+            "org.jetbrains.kotlin-wrappers:kotlin-$target"
+        fun ktor(target: String): String =
+            "io.ktor:ktor-$target"
+        fun exposed(target: String): String =
+            "org.jetbrains.exposed:exposed-$target"
+        fun koin(target: String): String =
+            "io.insert-koin:koin-$target"
+        fun flyway(target: String): String =
+            "org.flywaydb:flyway-$target"
+        fun slf4j(target: String): String =
+            "org.slf4j:slf4j-$target"
+
+
+        val kotlinWrappersVersion = "1.0.0-pre.529"
+        val ktorServerVersion = "2.2.4"
+        val koinVersion = "3.4.0"
+        val exposedVersion = "0.41.1"
+        val flywayVersion = "9.16.1"
+        val slf4jVersion = "2.0.6"
 
         val commonMain by getting
         val commonTest by getting {
@@ -55,40 +73,53 @@ kotlin {
             }
 
             dependencies {
-                implementation("io.ktor:ktor-server-netty:2.0.2")
-                implementation("io.ktor:ktor-server-core:2.0.2")
-                implementation("io.ktor:ktor-server-html-builder-jvm:2.0.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
-                implementation("org.slf4j:slf4j-api:2.0.6")
-                implementation("org.slf4j:slf4j-simple:2.0.6")
+                // ktor
+                implementation(enforcedPlatform(ktor("bom:$ktorServerVersion")))
+                implementation(ktor("server-netty"))
+                implementation(ktor("server-core"))
+                implementation(ktor("server-html-builder-jvm"))
+
+                // exposed
+                implementation(enforcedPlatform(exposed("bom:$exposedVersion")))
+                implementation(exposed("core"))
+                implementation(exposed("dao"))
+                implementation(exposed("jdbc"))
+
+                // koin
+                //implementation(enforcedPlatform(koin("bom:$koinVersion")))
+                implementation(koin("core:$koinVersion"))
+                implementation(koin("ktor:$koinVersion"))
+
+                // flyway
+                //implementation(enforcedPlatform(flyway("bom:$flywayVersion")))
+                implementation(flyway("core:$flywayVersion"))
+                implementation(flyway("mysql:$flywayVersion"))
+
+                // slf4j
+                //implementation(enforcedPlatform(slf4j("bom:$flywayVersion")))
+                implementation(slf4j("simple:$slf4jVersion"))
+                implementation(slf4j("api:$slf4jVersion"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
                 implementation("ch.qos.logback:logback-core:1.4.5")
                 implementation("org.mariadb.jdbc:mariadb-java-client:3.1.2")
-                implementation("org.flywaydb:flyway-mysql:9.16.1")
-                implementation("org.flywaydb:flyway-core:9.16.1")
                 implementation("com.mysql:mysql-connector-j:8.0.32")
-                implementation("io.insert-koin:koin-core:$koinVersion")
-                implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-                implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-                implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-                implementation("org.slf4j:slf4j-api:2.0.6")
-                implementation("org.slf4j:slf4j-simple:2.0.6")
-                implementation("ch.qos.logback:logback-core:1.4.5")
                 implementation("org.pircbotx:pircbotx:2.3")
-                implementation("io.ktor:ktor-server-core:2.2.3")
-                implementation("io.ktor:ktor-server-netty:2.2.3")
-                implementation("io.insert-koin:koin-ktor:3.3.1")
             }
         }
         val backendTest by getting
         val frontendMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:18.2.0-pre.346")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:18.2.0-pre.346")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:11.9.3-pre.346")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:6.3.0-pre.346")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:5.8.4-pre.346")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:5.8.4-pre.346")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:11.9.3-pre.346")
+                implementation(enforcedPlatform(kotlinWrappers("wrappers-bom:$kotlinWrappersVersion")))
+                implementation(kotlinWrappers("react"))
+                implementation(kotlinWrappers("react-dom"))
+                implementation(kotlinWrappers("react-router-dom"))
+                implementation(kotlinWrappers("mui"))
+                implementation(kotlinWrappers("mui-icons"))
+                implementation(kotlinWrappers("emotion"))
+
+                implementation(npm("date-fns", "2.29.3"))
+                implementation(npm("@date-io/date-fns", "2.16.0"))
             }
         }
         val frontendTest by getting
@@ -106,6 +137,12 @@ tasks.withType<ShadowJar> {
     }
     mergeServiceFiles {
         setPath("META-INF/services/org.flywaydb.core.extensibility.Plugin")
+    }
+}
+
+tasks {
+    wrapper {
+        gradleVersion = "8.0.2"
     }
 }
 

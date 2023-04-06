@@ -2,14 +2,12 @@ import csstype.Cursor.Companion.text
 import csstype.px
 import csstype.rgb
 import emotion.react.css
-import kotlinx.js.ReadonlyArray
-import kotlinx.js.jso
 import mui.material.*
 import mui.system.sx
 import react.*
-import react.dom.html.InputType
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.input
+import web.html.InputType
 
 external interface WelcomeProps : Props {
     var name: String
@@ -67,8 +65,8 @@ val Welcome = FC<WelcomeProps> { props ->
                 label = ReactNode("Movie")
             }
         }
-        onChange = { event, _, _,changedetails ->
-            name = changedetails?.option.toString()
+        onChange = { _, _, _, changeDetails ->
+            name = changeDetails?.option.toString()
         }
     }
     Button {
