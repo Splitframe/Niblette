@@ -9,7 +9,7 @@ fun main() {
         val root = document.getElementById("root") ?: throw IllegalStateException()
         document.body.appendChild(root)
 
-        val welcome = Welcome.create {
+        val welcome = Background.create {
             name = "Kotlin/JS"
         }
         createRoot(root).render(welcome)

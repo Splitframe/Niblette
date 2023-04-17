@@ -76,8 +76,7 @@ val Welcome = FC<WelcomeProps> { props ->
             showArray.add("click - the movie")
             println(showArray)
         }
+        css { background }
     }
-
-
 
 }
