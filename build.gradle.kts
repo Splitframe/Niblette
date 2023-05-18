@@ -51,14 +51,14 @@ kotlin {
             "org.slf4j:slf4j-$target"
 
 
-        val kotlinWrappersVersion = "1.0.0-pre.529"
+        val kotlinWrappersVersion = "1.0.0-pre.548"
         val ktorServerVersion = "2.2.4"
         val koinVersion = "3.4.0"
         val exposedVersion = "0.41.1"
         val flywayVersion = "9.16.1"
         val slf4jVersion = "2.0.6"
 
-        val commonMain by getting
+        val commonMain by getting { }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -113,6 +113,7 @@ kotlin {
                 implementation(enforcedPlatform(kotlinWrappers("wrappers-bom:$kotlinWrappersVersion")))
                 implementation(kotlinWrappers("react"))
                 implementation(kotlinWrappers("react-dom"))
+                implementation(kotlinWrappers("react-router"))
                 implementation(kotlinWrappers("react-router-dom"))
                 implementation(kotlinWrappers("mui"))
                 implementation(kotlinWrappers("mui-icons"))

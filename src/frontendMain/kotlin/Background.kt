@@ -1,22 +1,19 @@
 import csstype.*
-import csstype.Cursor.Companion.text
-import csstype.PropertyName.Companion.margin
 import emotion.react.css
-import mui.material.*
-import mui.system.ThemeProvider
-import mui.system.sx
+import js.core.jso
 import react.*
 import react.dom.html.ReactHTML.div
-import react.dom.html.ReactHTML.input
-import web.html.InputType
+import react.router.*
+import remix.run.router.matchPath
+import web.cssom.*
+import web.location.location
 
 external interface BackgroundProps : Props {
     var name: String
 }
 
+
 val Background = FC<BackgroundProps> { props ->
-    var name by useState(props.name)
-    var showArray by useState(mutableListOf<String>())
     div {
         css {
             backgroundColor = Color("#40444b")
@@ -26,21 +23,14 @@ val Background = FC<BackgroundProps> { props ->
             margin = 0.px
 
         }
-        div {
-            css {
-                height = 100.vh
-                width = 10.pct
-                minWidth = 220.px
-                backgroundColor = Color("#2f3136")
-                color = Color("#FAF9F6")
-            }
-            Sidebar{
-            }
-            Lists{
+        Routes {
+            Route {
+                this.asDynamic().path = "/"
+                this.asDynamic().element = createElement(Sidebar)
             }
         }
-    }
 
+    }
 //    Erst image.kt, dann lists.kt aus github/mui/karakum-team/showcase bla
     /**
     //
