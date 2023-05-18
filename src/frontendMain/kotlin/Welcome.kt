@@ -1,13 +1,15 @@
-import csstype.Cursor.Companion.text
-import csstype.Overflow
-import csstype.px
-import csstype.rgb
 import emotion.react.css
+import js.core.jso
 import mui.material.*
 import mui.system.sx
 import react.*
 import react.dom.html.ReactHTML.div
 import react.dom.html.ReactHTML.input
+import react.router.*
+import remix.run.router.Path
+import remix.run.router.matchPath
+import web.cssom.px
+import web.cssom.rgb
 import web.html.InputType
 
 external interface WelcomeProps : Props {
@@ -33,6 +35,7 @@ external interface WelcomeProps : Props {
 val Welcome = FC<WelcomeProps> { props ->
     var name by useState(props.name)
     var showArray by useState(mutableListOf<String>())
+
     div {
         css {
             padding = 5.px
@@ -77,7 +80,6 @@ val Welcome = FC<WelcomeProps> { props ->
             showArray.add("click - the movie")
             println(showArray)
         }
-        css { background }
     }
 
 }

@@ -1,16 +1,10 @@
-import csstype.PrintColorAdjust.Companion.exact
-import react.FC
-import react.Props
+import js.core.jso
+import react.*
 import web.window.window
 import web.dom.document
-import react.create
 import react.dom.client.createRoot
-import react.router.RelativeRoutingType.Companion.path
-import react.router.Route
-import react.router.RouterProvider
-import react.router.Routes
+import react.router.*
 import react.router.dom.BrowserRouter
-import remix.run.router.ImmutableRouteKey.Companion.path
 
 
 fun main() {
@@ -18,16 +12,17 @@ fun main() {
         val root = document.getElementById("root") ?: throw IllegalStateException()
         document.body.appendChild(root)
 
-        val welcome = Background.create {
-        }
-        createRoot(root).render(welcome)
+        createRoot(root).render(
+            BrowserRouter.create {
+                children = createElement(Background)
+            }
+        )
     }
 }
-//private val App = FC<Props> {
-//    RouterProvider {
-//        BrowserRouter {
-//            basename = "/"
-//            Background
-//        }
+
+private val App = FC<Props> {
+//    BrowserRouter {
+//        basename = "/"
+//        Background
 //    }
-//}
+}
