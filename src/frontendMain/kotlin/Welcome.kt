@@ -1,4 +1,5 @@
 import csstype.Cursor.Companion.text
+import csstype.Overflow
 import csstype.px
 import csstype.rgb
 import emotion.react.css
