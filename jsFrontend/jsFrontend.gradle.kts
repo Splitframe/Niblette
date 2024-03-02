@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
-project.description = "Ivanto Portal Frontend"
+project.description = "Niblette Frontend"
 plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
 //    id("io.github.turansky.seskar") version "1.17.0"
@@ -12,7 +12,7 @@ val frontendConfig: Map<String,String> = mapOf(
     "DEPLOYMENT" to (System.getenv("DEPLOYMENT") ?: "LOCAL"),
     "KEYCLOAK_SERVER" to (System.getenv("KEYCLOAK_SERVER") ?: "developer.local"),
     "KEYCLOAK_PORT" to (System.getenv("KEYCLOAK_PORT") ?: "8443"),
-    "KEYCLOAK_REALM" to (System.getenv("KEYCLOAK_REALM") ?: "IvantoPortalLocal"),
+    "KEYCLOAK_REALM" to (System.getenv("KEYCLOAK_REALM") ?: ""),
     "KEYCLOAK_CLIENT" to (System.getenv("KEYCLOAK_CLIENT") ?: "frontend"),
 )
 
@@ -23,7 +23,7 @@ kotlin {
             commonWebpackConfig {
                 // In a split multiplatform project webpack fudges the
                 // output file name, so we have to set it manually.
-                outputFileName = "ivantoportal-jsFrontend-js-frontend.js"
+                outputFileName = "niblette-jsFrontend-js-frontend.js"
                 cssSupport {
                     enabled.set(true)
                 }

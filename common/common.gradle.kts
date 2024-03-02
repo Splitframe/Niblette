@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
-project.description = "Ivanto Portal Commons"
+project.description = "Niblette Commons"
 
 
 plugins {
@@ -12,7 +12,7 @@ kotlin {
         browser()
     }
     jvm("jvm") {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
 
     sourceSets {
