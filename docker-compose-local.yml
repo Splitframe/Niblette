@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:15.3
+    container_name: postgres
+    #    command: --init-file /data/application/init.sql --lower_case_table_names=1
+    restart: unless-stopped
+    volumes:
+      - ./postgres/database:/var/lib/postgresql/data/pgdata
+      - ./postgres/init/init.sql:/docker-entrypoint-initdb.d/db.sql
+    ports:
+      - "5432:5432"
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: niblette

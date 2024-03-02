@@ -1,19 +1,21 @@
-version: '3.3'
-
 services:
   niblette:
-    image: niblette:0.1
+    image: niblette-server:0.1
     restart: unless-stopped
     environment:
-      DATABASE: 192.168.1.20
-
-  db:
-    image: mariadb:latest
-    command: --max_allowed_packet=536870912
+      DB_SERVER: ${DB_SERVER}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+  postgres:
+    image: postgres:15.3
+    container_name: postgres
+    restart: unless-stopped
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./postgres/database:/var/lib/postgresql/data/pgdata
+      - ./postgres/init/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - 3306:3306
+      - "5432:5432"
     environment:
-      MARIADB_ROOT_PASSWORD: sf87h
-      MARIADB_DATABASE: niblette
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: ${DB_PW}
