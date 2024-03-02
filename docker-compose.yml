@@ -18,4 +18,4 @@ services:
       - "5432:5432"
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_PASSWORD: ${DB_PW}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
