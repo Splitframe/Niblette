@@ -6,10 +6,6 @@ import mui.material.*
 import mui.system.sx
 import mui.material.ImageListItem
 import react.dom.html.ReactHTML.img
-import mui.icons.material.LibraryAdd
-import mui.icons.material.Settings
-import mui.icons.material.Reorder
-import mui.icons.material.Subscriptions
 import mui.system.PropsWithSx
 import react.PropsWithChildren
 import web.cssom.*
@@ -53,11 +49,11 @@ val Sidebar = FC<ListsProps> { props ->
                 divider = true
                 ListItemButton {
                     ListItemIcon {
-                        Reorder {
-                            sx {
-                                color = Color("#FAF9F6")
-                            }
-                        }
+//                        Reorder {
+//                            sx {
+//                                color = Color("#FAF9F6")
+//                            }
+//                        }
                     }
                     ListItemText {
                         +"Alle Titel"
@@ -72,9 +68,9 @@ val Sidebar = FC<ListsProps> { props ->
                 divider = true
                 ListItemButton {
                     ListItemIcon {
-                        LibraryAdd{
-                            htmlColor = "#FAF9F6"
-                        }
+//                        LibraryAdd{
+//                            htmlColor = "#FAF9F6"
+//                        }
                     }
                     ListItemText {
                         sx {
@@ -92,11 +88,11 @@ val Sidebar = FC<ListsProps> { props ->
                 divider = true
                 ListItemButton {
                     ListItemIcon {
-                        Subscriptions{
-                            sx {
-                                color = Color("#FAF9F6")
-                            }
-                        }
+//                        Subscriptions{
+//                            sx {
+//                                color = Color("#FAF9F6")
+//                            }
+//                        }
                     }
                     ListItemText {
                         +"Queue"
@@ -111,11 +107,11 @@ val Sidebar = FC<ListsProps> { props ->
                 divider = false
                 ListItemButton {
                     ListItemIcon {
-                        Settings{
-                            sx {
-                                color = Color("#FAF9F6")
-                            }
-                        }
+//                        Settings{
+//                            sx {
+//                                color = Color("#FAF9F6")
+//                            }
+//                        }
                     }
                     ListItemText {
                         +"Einstellungen"

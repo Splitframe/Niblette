@@ -1,5 +1,4 @@
 import emotion.react.css
-import js.core.jso
 import mui.material.*
 import mui.system.sx
 import react.*
@@ -8,8 +7,8 @@ import react.dom.html.ReactHTML.input
 import react.router.*
 import remix.run.router.Path
 import remix.run.router.matchPath
-import web.cssom.px
-import web.cssom.rgb
+import web.cssom.*
+import web.html.HTMLInputElement
 import web.html.InputType
 
 external interface WelcomeProps : Props {
@@ -41,6 +40,8 @@ val Welcome = FC<WelcomeProps> { props ->
             padding = 5.px
             backgroundColor = rgb(8, 97, 22)
             color = rgb(56, 246, 137)
+            color = Color("White")
+            margin = Auto.auto
         }
         +"Hello, $name"
     }
@@ -55,6 +56,12 @@ val Welcome = FC<WelcomeProps> { props ->
         value = name
         onChange = { event ->
             name = event.target.value
+        }
+    }
+    Input {
+        onChange = {
+            val target = it.target as HTMLInputElement
+            println(target.value)
         }
     }
 
@@ -81,5 +88,9 @@ val Welcome = FC<WelcomeProps> { props ->
             println(showArray)
         }
     }
-
 }
+
+fun ChildrenBuilder.myTextfield() = TextField {
+    
+}
+

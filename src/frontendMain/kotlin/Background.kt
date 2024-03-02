@@ -1,6 +1,5 @@
 import csstype.*
 import emotion.react.css
-import js.core.jso
 import react.*
 import react.dom.html.ReactHTML.div
 import react.router.*
@@ -23,12 +22,12 @@ val Background = FC<BackgroundProps> { props ->
             margin = 0.px
 
         }
-        Routes {
-            Route {
-                this.asDynamic().path = "/"
-                this.asDynamic().element = createElement(Sidebar)
-            }
-        }
+//        Routes {
+//            Route {
+//                this.asDynamic().path = "/"
+//                this.asDynamic().element = createElement(Sidebar)
+//            }
+//        }
 
     }
 //    Erst image.kt, dann lists.kt aus github/mui/karakum-team/showcase bla
