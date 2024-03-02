@@ -2,6 +2,8 @@ services:
   niblette:
     image: niblette-server:0.1
     restart: unless-stopped
+    depends_on:
+      - postgres
     environment:
       DB_SERVER: ${DB_SERVER}
       DB_PORT: ${DB_PORT}
